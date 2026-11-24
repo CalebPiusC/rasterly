@@ -1,7 +1,7 @@
 {
   "name": "rasterly",
   "version": "1.0.0",
-  "description": "Open-source code-to-image converter. Render HTML, CSS, React, JSX and TSX to PNG, JPEG or WebP in a real browser.",
+  "description": "Open-source code-to-image converter. Render HTML, CSS, React, JSX, TSX and Next.js components (or a URL) to PNG, JPEG or WebP in a real browser.",
   "license": "MIT",
   "type": "module",
   "engines": {

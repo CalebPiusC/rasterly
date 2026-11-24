@@ -43,7 +43,7 @@ export interface RenderOptions {
 }
 
 /**
- * Render source code (HTML/CSS/JSX/TSX) or a URL to an image.
+ * Render source code (HTML/CSS/JSX/TSX/Next.js) or a URL to an image.
  *
  * This is the engine's primary programmatic entry point. It is independent of
  * the frontend and returns a predictable result with the image buffer and

@@ -41,7 +41,7 @@ export interface BuiltDocument {
 
 /**
  * Build a complete, self-contained HTML document for the given config.
- * For JSX/TSX, `compiled` must contain the esbuild IIFE bundle.
+ * For JSX/TSX/Next, `compiled` must contain the esbuild IIFE bundle.
  */
 export function buildDocument(config: NormalizedRenderConfig, compiled?: CompileResult): BuiltDocument {
   const compiledCss = compiled?.css ? `<style>${escapeCloseScript(compiled.css)}</style>` : '';

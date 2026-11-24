@@ -15,7 +15,7 @@ Usage:
 Options:
   -o, --output <path>     Output file (default: rasterly.<ext>)
   -f, --format <fmt>      png | jpeg | webp (default: png)
-  -t, --input-type <t>    html | css | jsx | tsx | url (default: auto)
+  -t, --input-type <t>    html | css | jsx | tsx | next | url (default: auto)
   -w, --width <px>        Viewport width (default: 1200)
       --height <px>       Viewport height (default: 800)
   -s, --scale <1|2|3>     Device scale factor (default: 1)

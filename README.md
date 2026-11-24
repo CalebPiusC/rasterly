@@ -1,13 +1,13 @@
 # Rasterly
 
-**Rasterly** turns source code into crisp images. Write HTML, CSS, React, JSX or TSX — or point it at a URL — and export a pixel-perfect PNG, JPEG or WebP rendered in a real Chromium browser.
+**Rasterly** turns source code into crisp images. Write HTML, CSS, React, JSX, TSX or a Next.js component — or point it at a URL — and export a pixel-perfect PNG, JPEG or WebP rendered in a real Chromium browser.
 
 It is a small, self-hostable web app plus a reusable rendering engine and a CLI. No placeholders, no fake previews: every image is produced by an actual headless browser and post-processed with Sharp.
 
 ```
 ┌────────────────────────────┐   ┌────────────────────────────┐
 │  Source code (editor)      │   │  Live preview              │
-│  HTML · CSS · JSX · TSX    │ → │  zoom · fit · checkerboard │
+│  HTML · CSS · JSX · TSX · Next │ → │  zoom · fit · checkerboard │
 │  or a URL                  │   │  dimensions · metadata     │
 └────────────────────────────┘   └────────────────────────────┘
             │                                │
@@ -240,7 +240,7 @@ npm run typecheck # tsc --noEmit
 npm run lint      # eslint
 ```
 
-The suite (50 tests) covers HTML/CSS/JSX/TSX rendering, PNG/JPEG/WebP export, custom dimensions, scale factors, transparent alpha, compilation errors, invalid inputs, SSRF blocking and browser-context cleanup. Integration tests drive the real Playwright + Sharp pipeline.
+The suite (55 tests) covers HTML/CSS/JSX/TSX/Next.js rendering, PNG/JPEG/WebP export, custom dimensions, scale factors, transparent alpha, full-page capture, Next.js shims/`next/font`/CSS modules, compilation errors, invalid inputs, SSRF blocking and browser-context cleanup. Integration tests drive the real Playwright + Sharp pipeline.
 
 ## Project status / known limitations
 
