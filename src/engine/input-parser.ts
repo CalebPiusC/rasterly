@@ -9,7 +9,7 @@ export interface ParsedInput {
 
 const HTML_DOC_RE = /<!doctype\s+html|<html[\s>]/i;
 const JSX_HINT_RE = /<[A-Za-z][\w.]*[\s/>]|<\/[A-Za-z]/;
-const TS_RE = /:\s*[A-Za-z_$][\w$<>\[\]|&\s]*[=;,)]/;
+const TS_RE = /:\s*[A-Za-z_$][\w$<>|&\s[\]]*[=;,)]/;
 const INTERFACE_RE = /\b(interface|type)\s+[A-Z]/;
 const EXPORT_RE = /export\s+default/;
 
