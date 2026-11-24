@@ -13,6 +13,19 @@ export default defineConfig({
   build: {
     outDir: resolve(__dirname, 'dist/frontend'),
     emptyOutDir: true,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          react: ['react', 'react-dom'],
+          codemirror: [
+            '@uiw/react-codemirror',
+            '@codemirror/lang-html',
+            '@codemirror/lang-css',
+            '@codemirror/lang-javascript',
+          ],
+        },
+      },
+    },
   },
   server: {
     port: 5173,
