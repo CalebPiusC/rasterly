@@ -110,7 +110,8 @@ describe('rendering pipeline (integration)', () => {
       browser: manager,
     });
     const meta = await sharp(r.buffer).metadata();
-    expect(meta.height ?? 0).toBeGreaterThan(300);
+    expect(meta.width).toBe(400);
+    expect(meta.height ?? 0).toBeGreaterThanOrEqual(1000);
   });
 
   it('produces a transparent PNG with alpha', async () => {

@@ -62,6 +62,7 @@ export async function captureScreenshot(
   options: CaptureOptions,
 ): Promise<Buffer> {
   const page = await context.newPage();
+  await page.setViewportSize({ width: options.width, height: options.height });
   const seenHosts = new Set<string>();
 
   // Network guard: block private/internal targets and cap unique hosts.
