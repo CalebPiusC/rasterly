@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-const inputTypeSchema = z.enum(['html', 'css', 'jsx', 'tsx', 'url']);
+const inputTypeSchema = z.enum(['html', 'css', 'jsx', 'tsx', 'next', 'url']);
 const formatSchema = z.enum(['png', 'jpeg', 'webp']);
 const scaleSchema = z.union([z.literal(1), z.literal(2), z.literal(3)]);
 

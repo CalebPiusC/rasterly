@@ -78,8 +78,11 @@ export async function renderToImage(
       });
     } else {
       let compiled;
-      if (config.inputType === 'jsx' || config.inputType === 'tsx') {
-        compiled = await compileJsx(config.code, config.inputType);
+      if (config.inputType === 'jsx' || config.inputType === 'tsx' || config.inputType === 'next') {
+        compiled = await compileJsx(config.code, {
+          loader: config.inputType === 'tsx' || config.inputType === 'next' ? 'tsx' : 'jsx',
+          next: config.inputType === 'next',
+        });
       }
       const { html } = buildDocument(config, compiled);
       screenshot = await captureScreenshot(context, {

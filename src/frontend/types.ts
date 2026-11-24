@@ -1,4 +1,4 @@
-export type InputType = 'html' | 'css' | 'jsx' | 'tsx' | 'url';
+export type InputType = 'html' | 'css' | 'jsx' | 'tsx' | 'next' | 'url';
 export type OutputFormat = 'png' | 'jpeg' | 'webp';
 
 export interface RenderSettings {

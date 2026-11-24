@@ -14,6 +14,7 @@ const INPUT_TABS: { id: InputType; label: string }[] = [
   { id: 'css', label: 'CSS' },
   { id: 'jsx', label: 'JSX' },
   { id: 'tsx', label: 'TSX' },
+  { id: 'next', label: 'Next' },
   { id: 'url', label: 'URL' },
 ];
 

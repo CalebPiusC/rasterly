@@ -80,6 +80,31 @@ describe('rendering pipeline (integration)', () => {
     expect(r.metadata.bytes).toBeGreaterThan(100);
   });
 
+  it('renders a Next.js component with next/* imports and next/font', async () => {
+    const r = await renderToImage(
+      cfg({
+        inputType: 'next',
+        code: `'use client';
+import Image from 'next/image';
+import Link from 'next/link';
+import { Inter } from 'next/font/google';
+export default function Page() {
+  const inter = Inter({ subsets: ['latin'] });
+  return (
+    <div className={inter.className} style={{ padding: 24 }}>
+      <h1>Next</h1>
+      <Image src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" width={20} height={20} alt="" />
+      <Link href="/about">About</Link>
+    </div>
+  );
+}`,
+      }),
+      { browser: manager },
+    );
+    expect(isPng(r.buffer)).toBe(true);
+    expect(r.metadata.bytes).toBeGreaterThan(100);
+  });
+
   it('exports JPEG', async () => {
     const r = await renderToImage(cfg({ format: 'jpeg', quality: 80 }), { browser: manager });
     expect(isJpeg(r.buffer)).toBe(true);

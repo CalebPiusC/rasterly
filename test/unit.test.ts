@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { parseRenderConfig } from '../src/engine/validation.js';
 import { detectInputType, isFullHtmlDocument, analyzeSource } from '../src/engine/input-parser.js';
 import { buildDocument } from '../src/engine/document-builder.js';
-import { compileJsx } from '../src/engine/jsx-compiler.js';
+import { compileJsx, transformNextFontImports } from '../src/engine/jsx-compiler.js';
 import { normalizeConfig } from '../src/engine/render.js';
 
 const base = {
@@ -105,7 +105,7 @@ describe('buildDocument', () => {
 
 describe('compileJsx', () => {
   it('compiles JSX to an IIFE bundle exposing a global', async () => {
-    const result = await compileJsx('function App(){ return <div>hi</div>; }', 'jsx');
+    const result = await compileJsx('function App(){ return <div>hi</div>; }', { loader: 'jsx' });
     expect(result.code).toContain(result.globalName);
     expect(result.code.length).toBeGreaterThan(100);
   });
@@ -113,14 +113,60 @@ describe('compileJsx', () => {
   it('compiles TSX with types', async () => {
     const result = await compileJsx(
       'type P = { n: number }; function App(p: P){ return <div>{p.n}</div>; }',
-      'tsx',
+      { loader: 'tsx' },
     );
     expect(result.globalName).toBe('__RasterlyComponent');
   });
 
   it('throws COMPILATION_ERROR on invalid source', async () => {
-    await expect(compileJsx('const = ;', 'jsx')).rejects.toMatchObject({
+    await expect(compileJsx('const = ;', { loader: 'jsx' })).rejects.toMatchObject({
       code: 'COMPILATION_ERROR',
     });
+  });
+
+  it('rewrites next/font imports to the runtime helper', () => {
+    const out = transformNextFontImports(
+      "import { Inter, Roboto } from 'next/font/google';\nimport local from 'next/font/local';",
+    );
+    expect(out).toContain("__rasterlyFont('google')");
+    expect(out).toContain("__rasterlyFont('local')");
+    expect(out).not.toContain("from 'next/font");
+  });
+
+  it('compiles a Next.js component with next/* shims', async () => {
+    const result = await compileJsx(
+      `'use client';
+       import Image from 'next/image';
+       import Link from 'next/link';
+       import { Inter } from 'next/font/google';
+       export default function Page() {
+         const inter = Inter({ subsets: ['latin'] });
+         return <div className={inter.className}><Image src="/x.png" width={10} height={10} alt="" /><Link href="/y">go</Link></div>;
+       }`,
+      { loader: 'tsx', next: true },
+    );
+    expect(result.code).toContain('__RasterlyComponent');
+    expect(result.code).toContain('__rasterlyFont');
+  });
+
+  it('bundles imported CSS (incl. CSS modules) into result.css', async () => {
+    const { mkdtemp, writeFile, rm } = await import('node:fs/promises');
+    const { tmpdir } = await import('node:os');
+    const { join } = await import('node:path');
+    const dir = await mkdtemp(join(tmpdir(), 'rasterly-css-'));
+    try {
+      await writeFile(join(dir, 'globals.css'), '.globals { color: rgb(1, 2, 3); }');
+      await writeFile(join(dir, 'card.module.css'), '.card { color: rgb(4, 5, 6); }');
+      const result = await compileJsx(
+        `import './globals.css';
+         import s from './card.module.css';
+         export default function C(){ return <div className={s.card}>x</div>; }`,
+        { loader: 'tsx', next: true, resolveDir: dir },
+      );
+      expect(result.css).toContain('color: rgb(1, 2, 3)');
+      expect(result.css).toContain('color: rgb(4, 5, 6)');
+    } finally {
+      await rm(dir, { recursive: true, force: true });
+    }
   });
 });

@@ -44,10 +44,27 @@ export interface BuiltDocument {
  * For JSX/TSX, `compiled` must contain the esbuild IIFE bundle.
  */
 export function buildDocument(config: NormalizedRenderConfig, compiled?: CompileResult): BuiltDocument {
+  const compiledCss = compiled?.css ? `<style>${escapeCloseScript(compiled.css)}</style>` : '';
+  const fontRuntime =
+    config.inputType === 'next'
+      ? `<script>
+          window.__rasterlyLoadFont = function (family) {
+            try {
+              var link = document.createElement('link');
+              link.rel = 'stylesheet';
+              link.href = 'https://fonts.googleapis.com/css2?family=' + encodeURIComponent(family) + '&display=swap';
+              document.head.appendChild(link);
+            } catch (e) {}
+          };
+        </script>`
+      : '';
+
   const head = `
     <meta charset="utf-8" />
     <meta name="viewport" content="width=${config.width}, initial-scale=1" />
     <style>${baseStyle(config)}</style>
+    ${compiledCss}
+    ${fontRuntime}
   `;
 
   let body: string;
@@ -57,9 +74,10 @@ export function buildDocument(config: NormalizedRenderConfig, compiled?: Compile
       body = `<style>${escapeCloseScript(config.code)}</style>${CSS_SHOWCASE}`;
       break;
     case 'jsx':
-    case 'tsx': {
+    case 'tsx':
+    case 'next': {
       if (!compiled) {
-        throw new Error('Compiled JSX bundle is required for jsx/tsx input');
+        throw new Error(`Compiled bundle is required for ${config.inputType} input`);
       }
       body = `
         <div id="rasterly-root"></div>

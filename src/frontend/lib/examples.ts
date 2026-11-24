@@ -132,5 +132,41 @@ function Profile() {
     </div>
   );
 }`,
+  next: `'use client';
+
+import Image from 'next/image';
+import Link from 'next/link';
+import { Inter } from 'next/font/google';
+
+export default function Page() {
+  const inter = Inter({ subsets: ['latin'] });
+
+  return (
+    <main className={inter.className} style={{
+      fontFamily: 'Inter, system-ui, sans-serif',
+      padding: 48,
+      color: '#ececf1',
+      background: 'linear-gradient(160deg,#1c1c21,#111113)',
+      minHeight: '100vh',
+    }}>
+      <span style={{ color: '#5b8cff', fontSize: 12, letterSpacing: '0.12em', textTransform: 'uppercase' }}>
+        Next.js Component
+      </span>
+      <h1 style={{ margin: '12px 0 8px', fontSize: 44, letterSpacing: '-0.02em' }}>
+        Next → Image
+      </h1>
+      <p style={{ margin: '0 0 24px', color: '#8a8a99', fontSize: 16 }}>
+        next/image, next/link, next/font and CSS imports all work.
+      </p>
+      <Link href="/docs" style={{ color: '#5b8cff', marginRight: 16 }}>Read the docs</Link>
+      <Image
+        src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><rect width='120' height='120' rx='16' fill='%235b8cff'/></svg>"
+        width={120}
+        height={120}
+        alt="logo"
+      />
+    </main>
+  );
+}`,
   url: 'https://example.com',
 };

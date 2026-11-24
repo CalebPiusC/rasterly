@@ -21,8 +21,9 @@ It is a small, self-hostable web app plus a reusable rendering engine and a CLI.
 
 ## Features
 
-- **Code editor** (CodeMirror 6) with syntax highlighting for HTML, CSS, JSX and TSX, sensible starter examples, `⌘/Ctrl+Enter` to render, copy/paste and autocomplete.
-- **Real rendering engine** — determines input type, compiles JSX/TSX with esbuild, builds a document, renders in isolated Chromium contexts, waits for fonts/images/first paint (no arbitrary fixed delays), captures, and encodes with Sharp.
+- **Code editor** (CodeMirror 6) with syntax highlighting for HTML, CSS, JSX, TSX and Next.js, sensible starter examples, `⌘/Ctrl+Enter` to render, copy/paste and autocomplete.
+- **Real rendering engine** — determines input type, compiles JSX/TSX/Next.js with esbuild, builds a document, renders in isolated Chromium contexts, waits for fonts/images/first paint (no arbitrary fixed delays), captures, and encodes with Sharp.
+- **Next.js support** — a dedicated `next` input type that understands `next/image`, `next/link`, `next/head`, `next/script`, `next/router`, `next/navigation`, `next/dynamic`, `next/document`, `next/config`, `next/font/google` and `next/font/local`, the `'use client'` directive, tsconfig path aliases (`@/*`, `~/*`), and CSS / CSS-module imports (injected into the render). `next/font/google` families are loaded at render time via Google Fonts.
 - **Live preview** with zoom (fit / 50% / 100% / 200%), checkerboard for transparency, dimension + size + timing metadata, loading and error states.
 - **Export controls**: format, width/height, scale (1×/2×/3×), background color, transparent background, quality (lossy), full-page capture.
 - **URL-to-image** with SSRF protection (blocks private/internal IPs, non-http(s) protocols, and configurable hosts), navigation timeouts and per-request network guards.
@@ -77,7 +78,7 @@ import { renderToImage, closeSharedBrowser } from 'rasterly'; // or from './src/
 
 const result = await renderToImage({
   code: '<h1 style="color:#5b8cff">Hello</h1>',
-  inputType: 'html',        // 'html' | 'css' | 'jsx' | 'tsx' | 'url'
+  inputType: 'html',        // 'html' | 'css' | 'jsx' | 'tsx' | 'next' | 'url'
   format: 'png',            // 'png' | 'jpeg' | 'webp'
   width: 1200,
   height: 800,
@@ -97,6 +98,39 @@ await closeSharedBrowser(); // release the shared Chromium process
 ```
 
 A runnable example lives in [`examples/programmatic.ts`](./examples/programmatic.ts).
+
+### Rendering Next.js components
+
+Use `inputType: 'next'` to render a single Next.js page/component. The compiler resolves `next/*` imports to browser-safe shims, loads `next/font` families, applies tsconfig path aliases, and injects imported CSS.
+
+```ts
+const result = await renderToImage({
+  inputType: 'next',
+  format: 'png',
+  width: 1200,
+  height: 800,
+  scale: 2,
+  fullPage: false,
+  transparent: false,
+  backgroundColor: '#0f0f12',
+  quality: 90,
+  code: `
+    'use client';
+    import Image from 'next/image';
+    import { Inter } from 'next/font/google';
+    export default function Page() {
+      const inter = Inter({ subsets: ['latin'] });
+      return (
+        <main className={inter.className}>
+          <h1>Hello from Next</h1>
+          <Image src="/logo.png" width={64} height={64} alt="logo" />
+        </main>
+      );
+    }`,
+});
+```
+
+**Next.js support scope:** it renders a single component/page, not a full Next app. Supported: `next/image`, `next/link`, `next/head`, `next/script`, `next/router`, `next/navigation`, `next/dynamic`, `next/document`, `next/config`, `next/font/google`, `next/font/local`, `'use client'`, tsconfig `paths` aliases, and `import './x.css'` / `*.module.css`. Not supported: server components running on the server, `next/og` `ImageResponse`, route handlers, middleware, and cross-file module graphs beyond relative/aliased imports (the entry is compiled with `resolveDir` = current working directory, so run the CLI from your project root to resolve local imports and `tsconfig.json`).
 
 ## HTTP API
 
@@ -140,7 +174,7 @@ src/
     types.ts              # public types + MIME/extension maps
     validation.ts         # Zod schemas for untrusted input
     input-parser.ts       # input-type detection + source analysis
-    jsx-compiler.ts       # esbuild JSX/TSX → IIFE bundle (React bundled in)
+    jsx-compiler.ts       # esbuild JSX/TSX/Next → IIFE bundle (React + next/* shims, CSS)
     document-builder.ts   # HTML document construction (fragments, CSS, React mount)
     browser.ts            # Chromium lifecycle + isolated context pool
     screenshot.ts         # navigation, network guard, wait strategy, capture

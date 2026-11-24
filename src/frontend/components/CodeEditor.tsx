@@ -20,6 +20,8 @@ function extensionsFor(inputType: InputType) {
       return [javascript({ jsx: true })];
     case 'tsx':
       return [javascript({ jsx: true, typescript: true })];
+    case 'next':
+      return [javascript({ jsx: true, typescript: true })];
     case 'html':
     default:
       return [html()];
