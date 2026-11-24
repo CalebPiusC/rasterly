@@ -6,7 +6,6 @@ import { isIP } from 'node:net';
 export interface CaptureOptions {
   width: number;
   height: number;
-  scale: number;
   fullPage: boolean;
   timeoutMs: number;
   /** Capture with a transparent background (PNG/WebP). */

@@ -27,11 +27,13 @@ export async function processImage(
 
     const scale = config.scale;
     if (scale > 1) {
-      pipeline = pipeline.resize({
-        width: Math.round(config.width * scale),
-        height: Math.round(config.height * scale),
-        fit: 'fill',
-      });
+      pipeline = config.fullPage
+        ? pipeline.resize({ width: Math.round(config.width * scale) })
+        : pipeline.resize({
+            width: Math.round(config.width * scale),
+            height: Math.round(config.height * scale),
+            fit: 'fill',
+          });
     }
 
     switch (config.format) {

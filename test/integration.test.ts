@@ -103,6 +103,16 @@ describe('rendering pipeline (integration)', () => {
     expect(r.metadata.height).toBe(400);
   });
 
+  it('captures full page beyond the viewport height', async () => {
+    const tall =
+      '<div style="height:1200px;background:linear-gradient(#5b8cff,#0f0f12)"></div>';
+    const r = await renderToImage(cfg({ width: 400, height: 300, fullPage: true, code: tall }), {
+      browser: manager,
+    });
+    const meta = await sharp(r.buffer).metadata();
+    expect(meta.height ?? 0).toBeGreaterThan(300);
+  });
+
   it('produces a transparent PNG with alpha', async () => {
     const r = await renderToImage(
       cfg({ transparent: true, code: '<div style="width:100px;height:100px"></div>' }),

@@ -1,7 +1,7 @@
 import { getBrowserManager } from './browser.js';
 import { buildDocument } from './document-builder.js';
 import { RenderError } from './errors.js';
-import { analyzeSource, detectInputType } from './input-parser.js';
+import { detectInputType } from './input-parser.js';
 import { processImage } from './image-processor.js';
 import { compileJsx } from './jsx-compiler.js';
 import { captureScreenshot } from './screenshot.js';
@@ -62,7 +62,6 @@ export async function renderToImage(
     context.setDefaultTimeout(config.timeoutMs);
 
     let screenshot: Buffer;
-    const analysis = analyzeSource(config.code, config.inputType);
 
     if (config.inputType === 'url') {
       const validated = await validateUrl(config.code, {
@@ -72,7 +71,6 @@ export async function renderToImage(
       screenshot = await captureScreenshot(context, {
         width: config.width,
         height: config.height,
-        scale: config.scale,
         fullPage: config.fullPage,
         timeoutMs: config.timeoutMs,
         transparent: config.transparent,
@@ -87,13 +85,11 @@ export async function renderToImage(
       screenshot = await captureScreenshot(context, {
         width: config.width,
         height: config.height,
-        scale: config.scale,
         fullPage: config.fullPage,
         timeoutMs: config.timeoutMs,
         transparent: config.transparent,
         html,
       });
-      void analysis;
     }
 
     const processed = await processImage(screenshot, config);
