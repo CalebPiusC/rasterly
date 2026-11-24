@@ -9,6 +9,8 @@ export interface CaptureOptions {
   scale: number;
   fullPage: boolean;
   timeoutMs: number;
+  /** Capture with a transparent background (PNG/WebP). */
+  transparent?: boolean;
   /** When set, navigate to this URL instead of using setContent. */
   url?: string;
   /** HTML to render via setContent when no url is given. */
@@ -106,6 +108,7 @@ export async function captureScreenshot(
 
     const buffer = await page.screenshot({
       fullPage: options.fullPage,
+      omitBackground: options.transparent ?? false,
       clip: options.fullPage
         ? undefined
         : { x: 0, y: 0, width: options.width, height: options.height },

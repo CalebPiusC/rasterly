@@ -75,6 +75,7 @@ export async function renderToImage(
         scale: config.scale,
         fullPage: config.fullPage,
         timeoutMs: config.timeoutMs,
+        transparent: config.transparent,
         url: validated.url.toString(),
       });
     } else {
@@ -89,6 +90,7 @@ export async function renderToImage(
         scale: config.scale,
         fullPage: config.fullPage,
         timeoutMs: config.timeoutMs,
+        transparent: config.transparent,
         html,
       });
       void analysis;

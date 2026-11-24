@@ -57,6 +57,7 @@ ${contents}
       },
       minify: false,
       legalComments: 'none',
+      logLevel: 'silent',
     });
 
     const code = result.outputFiles?.[0]?.text;

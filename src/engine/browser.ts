@@ -66,6 +66,15 @@ export class BrowserManager {
     this.activeContexts = Math.max(0, this.activeContexts - 1);
   }
 
+  /** Number of currently active contexts (for tests/observability). */
+  get activeContextCount(): number {
+    return this.activeContexts;
+  }
+
+  get isReady(): boolean {
+    return this.browser != null;
+  }
+
   async close(): Promise<void> {
     if (this.browser) {
       await this.browser.close().catch(() => undefined);
